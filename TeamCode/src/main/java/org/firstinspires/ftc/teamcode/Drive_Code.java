@@ -33,23 +33,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
 
 @TeleOp(name="Meccanum Drive Code")
 @Disabled
@@ -57,11 +45,10 @@ import com.qualcomm.robotcore.util.Range;
 public class Drive_Code extends OpMode {
 
 
-// this is a sentence that makes sense
-
-
 
     private DcMotor frontRight, frontLeft, backLeft, backRight;
+    private DcMotorEx spinner, lift, intake, turnTable;
+
 
 
     public void init(){
@@ -75,6 +62,10 @@ public class Drive_Code extends OpMode {
         frontLeft = hardwareMap.get(DcMotor.class, "Q2/fl");
         backLeft  = hardwareMap.get(DcMotor.class, "Q3/bl");
         backRight = hardwareMap.get(DcMotor.class, "Q4/br");
+        spinner = hardwareMap.get(DcMotorEx.class, "carousel");
+        lift = hardwareMap.get(DcMotorEx.class, "lift");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        turnTable = hardwareMap.get(DcMotorEx.class, "turnTable");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -93,13 +84,45 @@ public class Drive_Code extends OpMode {
         telemetry.addData("Status", "Active");
         telemetry.update();
         setVelos();
+
+        if(gamepad2.a){
+            intake.setPower(1);
+        }else if(gamepad2.b){
+            intake.setPower(-1);
+        }else{
+            intake.setPower(0);
+        }
+
+        if(gamepad2.x){
+            turnTable.setPower(1);
+        }else if(gamepad2.y){
+            turnTable.setPower(-1);
+        }else{
+            intake.setPower(0);
+        }
+
+        if(gamepad2.left_trigger != 0){
+            turnTable.setPower(1);
+        }else if(gamepad2.right_trigger != 0){
+            turnTable.setPower(-1);
+        }else{
+            intake.setPower(0);
+        }
+
+        if(gamepad2.right_bumper){
+            spinner.setPower(1);
+        }else{
+            spinner.setPower(0);
+        }
+
+
     }
 
     public void setVelos(){
-        frontRight.setPower(gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.right_stick_x);
-        frontLeft.setPower(gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.right_stick_x);
-        backLeft.setPower(gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.right_stick_x);
-        backRight.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x);
+        frontRight.setPower((gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.right_stick_x) * 0.8);
+        frontLeft.setPower((gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.right_stick_x) * 0.8);
+        backLeft.setPower((gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.right_stick_x) * 0.8);
+        backRight.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * 0.8);
     }
 
 
