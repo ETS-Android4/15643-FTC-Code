@@ -98,15 +98,15 @@ public class Drive_Code extends OpMode {
         }else if(gamepad2.y){
             turnTable.setPower(-1);
         }else{
-            intake.setPower(0);
+            turnTable.setPower(0);
         }
 
         if(gamepad2.left_trigger != 0){
-            turnTable.setPower(1);
+            lift.setPower(1);
         }else if(gamepad2.right_trigger != 0){
-            turnTable.setPower(-1);
+            lift.setPower(-1);
         }else{
-            intake.setPower(0);
+            lift.setPower(0);
         }
 
         if(gamepad2.right_bumper){
@@ -114,7 +114,6 @@ public class Drive_Code extends OpMode {
         }else{
             spinner.setPower(0);
         }
-
 
     }
 
